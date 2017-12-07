@@ -1,0 +1,31 @@
+{
+  "name": "react-template",
+  "version": "1.0.0",
+  "description": "boiler plate code for a simple ReactJS app",
+  "main": "./server/index.js",
+  "scripts": {
+    "react-dev": "webpack -d --watch",
+    "server-dev": "nodemon --inspect server/index.js"
+  },
+  "author": "Dan Dai",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "dotenv": "^4.0.0",
+    "express": "^4.16.1",
+    "install": "^0.10.1",
+    "jquery": "^3.2.1",
+    "npm": "^5.4.2",
+    "path": "^0.12.7",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "require": "^2.4.20",
+    "webpack": "^3.6.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1"
+  }
+}
