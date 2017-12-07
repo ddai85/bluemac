@@ -1,11 +1,15 @@
 {
-  "name": "react-template",
+  "name": "bluemac",
   "version": "1.0.0",
-  "description": "boiler plate code for a simple ReactJS app",
+  "description": "An app to visualize traffic data between two BlueMAC devices",
   "main": "./server/index.js",
   "scripts": {
     "react-dev": "webpack -d --watch",
     "server-dev": "nodemon --inspect server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ddai85/bluemac.git"
   },
   "author": "Dan Dai",
   "license": "ISC",
