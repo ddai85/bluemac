@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
-import PlotSheet from './components/plot-sheet.jsx';
+import PlotSheet from './components/plotSheet.jsx';
+import PlotSheetByHour from './components/plotSheetByHour.jsx';
 import Header from './components/header.jsx';
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 import Grid from 'material-ui/Grid';
@@ -40,8 +41,8 @@ class App extends React.Component {
     return (
       <MuiThemeProvider theme={theme}>
         <Header />
-        <PlotSheet data={this.state.trafficData} plotID="1"/>
         <PlotSheet data={this.state.trafficData} plotID="2"/>
+        <PlotSheetByHour data={this.state.trafficData} plotID="1"/>
       </MuiThemeProvider>
     );
   }
