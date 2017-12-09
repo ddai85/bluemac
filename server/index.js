@@ -5,14 +5,18 @@ const app = express();
 const port = 8888;
 const data = require('./sample_data.js');
 
+/* ----- Body parsing middleware ----- */
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+
+/* ----- Set up sessions with express-session library. Give all new users cookie with default 
+user settings save all user settings to sessionID, do sessionID lookup with returning users ----- */
 app.use(session({
   secret: 'bluemac',
   resave: false,
   saveUninitialized: true,
   cookie: { secure: false }
 }))
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
 
 app.use('/', function(req, res, next) {
   if (!req.session.settings) {
@@ -40,6 +44,7 @@ app.get('/settings', function(req, res, next) {
   res.status(200).send(JSON.stringify(req.session.settings));
 });
 
+/* ----- Basic webapp server functionality ----- */
 app.use(express.static(__dirname + '/../client/dist'));
 
 app.get('/data', (req, res) => {
@@ -47,8 +52,8 @@ app.get('/data', (req, res) => {
 });
 
 
-app.listen(port, () => {
+let server = app.listen(port, () => {
   console.log('listening to port ', port);
 });
 
-module.exports.app = app;
+module.exports = server;

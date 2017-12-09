@@ -1,8 +1,8 @@
-/* ----- This file will receive raw data, process it by bucketing times by hour and return an array of data values ready to plot ----- */
 const { convertTimeToHour } = require('./helperFunctions.js');
 
+/* ----- This function will receive raw data, process it by bucketing times 
+by hour and return an array of averaged data values ready to plot ----- */
 const bucketByHour = function(data) {
-
   let processedData = convertTimeToHour(data);
 
   let hourBuckets = [];
@@ -20,7 +20,7 @@ const bucketByHour = function(data) {
           hourBuckets.push([prevHour, 0]);
         } else {
           let average = Math.floor(runningSum / numItems);
-          hourBuckets.push([prevHour, average]);
+          hourBuckets.push([new Date(prevHour), average]);
           runningSum = 0;
           numItems = 0;
         }
@@ -31,9 +31,15 @@ const bucketByHour = function(data) {
       numItems++;
     }
   }
+  if (numItems !== 0) {
+    let average = Math.floor(runningSum / numItems);
+    hourBuckets.push([new Date(prevHour), average]);
+  }
   return hourBuckets;
 };
 
+/* ----- carsPerBucket function receives raw data input and buckets all items by
+hour and returns a count of number of items in each bucket ----- */
 const carsPerBucket = function(data) {
   let processedData = convertTimeToHour(data);
 
@@ -57,6 +63,9 @@ const carsPerBucket = function(data) {
       }
       numItems++;
     }
+  }
+  if (numItems !== 0) {
+    hourBuckets.push([prevHour, numItems]);
   }
   return hourBuckets;
 };

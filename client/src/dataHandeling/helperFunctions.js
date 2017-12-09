@@ -11,10 +11,7 @@ const convertTimeToHour = function(rawData) {
   return convertedData;
 }
 
-module.exports = {
-  convertTimeToHour
-}
-
+/* ----- Basic time convert from BlueMAC time data to standard JavaScript format ----- */
 const convertTime = function(rawData) {
   let convertedData = rawData.map((item) => {
     let newTime = new Date(2010, 0, 1, 0, 0, item[0], 0);
@@ -24,6 +21,7 @@ const convertTime = function(rawData) {
   return convertedData;
 }
 
+/* ----- Takes elapsed time (sec) and distance (miles) and converts to speed ----- */
 const convertSpeed = function(rawData, distance) {
   let convertedData = rawData.map((item) => {
     let speed = Math.floor(distance / item[1] * 3600);
