@@ -14,56 +14,52 @@ describe('Server', () => {
     server.close();
   });
 
-  describe('Should serve the correct client app', () => {
-    it('Should serve presenter client on GET requests to /', (done) => {
+  describe('Should serve the app', () => {
+    it('Should serve main webpack bundle on GET requests to /', (done) => {
       request(server)
         .get('/')
         .expect('Content-Type', /text\/html/)
-        .expect(/src="dist\/index_presenter\.js"/)
-        .expect(200)
-        .end(done);
-    });
-
-    it('Should serve player client on GET requests to /join', (done) => {
-      request(server)
-        .get('/join')
-        .expect('Content-Type', /text\/html/)
-        .expect(/src="dist\/index_player\.js"/)
+        .expect(/src="main.bundle\.js"/)
         .expect(200)
         .end(done);
     });
   });
 
-  describe('Should serve static files', () => {
-    // not yet compiled in testing environment
-    xit('Should serve presenter js file', (done) => {
+  describe('Should serve sample data from /data route', () => {
+    it('Should serve array with length 2022 (number of data points in served set)', (done) => {
       request(server)
-        .get('/dist/index_presenter.js')
-        .expect(200)
+        .get('/data')
+        .expect((res) => {
+          let arrLength = JSON.parse(res.text).length;
+          res.body.arrLength = arrLength;
+        })
+        .expect(200, {
+           arrLength: 2022
+        })
         .end(done);
     });
+  });
 
-    // not yet compiled in testing environment
-    xit('Should serve player js file', (done) => {
+  describe('Should serve user settings from /settings route', () => {
+    it('Should serve settings object for 2 plots containing yAxisLabel and distance', (done) => {
       request(server)
-        .get('/dist/index_player.js')
-        .expect(200)
-        .end(done);
-    });
-
-    it('Should serve css file', (done) => {
-      request(server)
-        .get('/styles/style_player.css')
-        .expect('Content-Type', /text\/css/)
-        .expect(200)
-        .end(done);
-    });
-
-    it('Should serve css file', (done) => {
-      request(server)
-        .get('/styles/style_presenter.css')
-        .expect('Content-Type', /text\/css/)
-        .expect(200)
+        .get('/settings')
+        .expect((res) => {
+          let data = JSON.parse(res.text);
+          res.body.settings = data;
+        })
+        .expect(200, {
+          settings: {
+            0: {
+              yAxisLabel: 'Elapsed Time (sec)',
+              distance: 1
+            },
+            1: {
+              yAxisLabel: 'Elapsed Time (sec)',
+              distance: 1
+            }
+          }
+        })
         .end(done);
     });
   });
