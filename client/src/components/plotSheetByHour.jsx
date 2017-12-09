@@ -6,6 +6,7 @@ import Controls from './controls.jsx';
 import Paper from 'material-ui/Paper';
 import { bucketByHour } from '../dataHandeling/bucketByHour.js';
 import Typography from 'material-ui/Typography';
+import { getSettings } from '../dataHandeling/fetchData.js';
 
 const styles = theme => ({
   sheet: {
@@ -58,29 +59,44 @@ export class PlotSheetByHour extends React.Component {
     super(props);
     this.state = {
       data: [],
-      yAxisLabel: 'Elapsed Time (sec)'
+      yAxisLabel: 'Elapsed Time (sec)',
+      yAxisToggle: true,
+      distance: 1
     };
     this.timeSpeedToggle = this.timeSpeedToggle.bind(this);
     this.distanceChange = this.distanceChange.bind(this);
   }
 
+  componentDidMount() {
+    getSettings((data) => {
+      this.setState({yAxisLabel: data[this.props.plotID].yAxisLabel, distance: data[this.props.plotID].distance});
+      if (data[this.props.plotID].yAxisLabel !== 'Elapsed Time (sec)') {
+        this.setState({yAxisToggle: false});
+      }
+    });
+  }
+
   componentWillReceiveProps(nextProps) {
-    this.setState({data: bucketByHour(nextProps.data)});
+    if (this.state.yAxisLabel === 'Speed (mph)') {
+      this.setState({data: convertSpeed(bucketByHour(nextProps.data), this.state.distance)});
+    } else {
+      this.setState({data: bucketByHour(nextProps.data)});
+    }
   }
 
   timeSpeedToggle(checked, distance) {
     let data = bucketByHour(this.props.data);
     if (checked) {
-      this.setState({data: data, yAxisLabel: 'Elapsed Time (sec)'});
+      this.setState({data: data, yAxisLabel: 'Elapsed Time (sec)', yAxisToggle: true});
     } else {
       data = convertSpeed(data, distance);
-      this.setState({data: data, yAxisLabel: 'Speed (mph)'});
+      this.setState({data: data, yAxisLabel: 'Speed (mph)', yAxisToggle: false});
     }
   }
 
   distanceChange(distance) {
     let data = convertSpeed(bucketByHour(this.props.data), distance);
-    this.setState({data: data});
+    this.setState({data: data, distance: distance});
   }
 
   render() {
@@ -89,7 +105,7 @@ export class PlotSheetByHour extends React.Component {
       <Paper className={classes.sheet}>
         <Typography type='title' align='left' className={classes.title}>Average Trip Grouped By Hour</Typography>
         <Plot data={this.state.data} yAxisLabel={this.state.yAxisLabel} plotOptions={plotOptions} plotID={this.props.plotID} className={classes.plot}/>
-        <Controls distanceChange={this.distanceChange} timeSpeedToggle={this.timeSpeedToggle}/>
+        <Controls distanceChange={this.distanceChange} timeSpeedToggle={this.timeSpeedToggle} plotID={this.props.plotID} checked={this.state.yAxisToggle} distance={this.state.distance}/>
       </Paper>
     );
   }
