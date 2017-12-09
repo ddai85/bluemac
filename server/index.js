@@ -33,12 +33,10 @@ app.post('/settings', function(req, res, next) {
   for (let i in req.body) {
     req.session.settings[i] = req.body[i];
   }
-  console.log(req.session.settings);
   res.end();
 });
 
 app.get('/settings', function(req, res, next) {
-  console.log(req.body);
   res.status(200).send(JSON.stringify(req.session.settings));
 });
 

@@ -96,7 +96,7 @@ export class PlotSheetByHour extends React.Component {
 
   distanceChange(distance) {
     let data = convertSpeed(bucketByHour(this.props.data), distance);
-    this.setState({data: data});
+    this.setState({data: data, distance: distance});
   }
 
   render() {
@@ -105,7 +105,7 @@ export class PlotSheetByHour extends React.Component {
       <Paper className={classes.sheet}>
         <Typography type='title' align='left' className={classes.title}>Average Trip Grouped By Hour</Typography>
         <Plot data={this.state.data} yAxisLabel={this.state.yAxisLabel} plotOptions={plotOptions} plotID={this.props.plotID} className={classes.plot}/>
-        <Controls distanceChange={this.distanceChange} timeSpeedToggle={this.timeSpeedToggle} plotID={this.props.plotID} checked={this.state.yAxisToggle}/>
+        <Controls distanceChange={this.distanceChange} timeSpeedToggle={this.timeSpeedToggle} plotID={this.props.plotID} checked={this.state.yAxisToggle} distance={this.state.distance}/>
       </Paper>
     );
   }

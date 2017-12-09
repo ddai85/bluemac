@@ -42,6 +42,7 @@ class Controls extends React.Component {
         yAxisLabel: 'Speed (mph)'
       })
     }
+    this.setState({distance: nextProps.distance});
   }
 
   handleChange(field) {
@@ -69,6 +70,12 @@ class Controls extends React.Component {
   
   handleDistanceChange() {
     this.props.distanceChange(this.state.distance);
+    let setting = {}
+    setting[this.props.plotID] = {
+      yAxisLabel: this.state.yAxisLabel,
+      distance: this.state.distance
+    }
+    saveSettings(setting);
   }
   
   render() {

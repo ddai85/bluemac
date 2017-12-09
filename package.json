@@ -27,6 +27,7 @@
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "require": "^2.4.20",
+    "supertest": "^3.0.0",
     "typeface-roboto": "0.0.45",
     "webpack": "^3.6.0"
   },

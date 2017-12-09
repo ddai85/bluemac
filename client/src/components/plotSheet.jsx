@@ -101,7 +101,7 @@ export class PlotSheet extends React.Component {
 
   distanceChange(distance) {
     let data = convertTime(convertSpeed(this.props.data, distance));
-    this.setState({data: data});
+    this.setState({data: data, distance: distance});
   }
 
   render() {
@@ -111,7 +111,7 @@ export class PlotSheet extends React.Component {
         <Paper className={classes.sheet}>
           <Typography type='title' className={classes.title} align='left'>Raw Data</Typography>
           <Plot data={this.state.data} yAxisLabel={this.state.yAxisLabel} plotOptions={plotOptions} plotID={this.props.plotID} className={classes.plot}/>
-          <Controls timeSpeedToggle={this.timeSpeedToggle} distanceChange={this.distanceChange} plotID={this.props.plotID} checked={this.state.yAxisToggle}/>
+          <Controls timeSpeedToggle={this.timeSpeedToggle} distanceChange={this.distanceChange} plotID={this.props.plotID} checked={this.state.yAxisToggle} distance={this.state.distance}/>
         </Paper>
       </div>
     );
