@@ -1,3 +1,5 @@
+/* ----- Plot component renders Flot graph with given props ----- */
+
 import React from 'react';
 import { withStyles } from 'material-ui/styles';
 import $ from 'jquery';
@@ -31,7 +33,6 @@ class Plot extends React.Component {
     this.setState({data: nextProps.data, plotOptions: plotOptions});
     
   }
-  
   
   render() {
     $.plot($('#' + this.props.plotID), [{data: this.state.data}], this.state.plotOptions);

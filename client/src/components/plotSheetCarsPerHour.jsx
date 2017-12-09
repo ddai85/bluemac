@@ -59,6 +59,7 @@ const plotOptions = {
 
 /* ----- PlotSheet component is responsible for taking data for individual plot, transforming it and
 sending data and Flot configuration variables to Plot component for graph to render -----  */
+
 export class PlotSheetCarsPerHour extends React.Component {
   constructor(props) {
     super(props);

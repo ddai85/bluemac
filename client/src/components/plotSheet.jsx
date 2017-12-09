@@ -1,5 +1,6 @@
 /* ----- PlotSheet component is responsible for taking data for individual plot, transforming it and
 sending data and Flot configuration variables to Plot component for graph to render -----  */
+
 import React from 'react';
 import { withStyles } from 'material-ui/styles';
 import Plot from './plot.jsx';

@@ -1,3 +1,5 @@
+/* ----- Index is entry point for webapp and calls all the individual subcomponents ----- */
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
@@ -31,12 +33,12 @@ class App extends React.Component {
     };
   }
 
-  componentDidMount() {
+/* ----- getData function fetches data once from server and passes down to individual plots ----- */
+  componentWillMount() {
     getData((data) => {
       this.setState({trafficData: data});
     });
   }
-
 
   render() {
     const { classes } = this.props;
