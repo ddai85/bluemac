@@ -4,7 +4,7 @@ import Plot from './plot.jsx';
 import { convertSpeed } from '../dataHandeling/helperFunctions.js';
 import Controls from './controls.jsx';
 import Paper from 'material-ui/Paper';
-import { bucketByHour } from '../dataHandeling/bucketByHour.js';
+import { carsPerBucket } from '../dataHandeling/bucketByHour.js';
 import Typography from 'material-ui/Typography';
 
 const styles = theme => ({
@@ -25,6 +25,12 @@ const styles = theme => ({
 });
 
 const plotOptions = {
+  series: {
+    bars: {
+      show: true
+    },
+    color: '#37C24A'
+  },
   axisLabels: {
     show: true
   },
@@ -53,46 +59,28 @@ const plotOptions = {
 
 /* ----- PlotSheet component is responsible for taking data for individual plot, transforming it and
 sending data and Flot configuration variables to Plot component for graph to render -----  */
-export class PlotSheetByHour extends React.Component {
+export class PlotSheetCarsPerHour extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       data: [],
-      yAxisLabel: 'Elapsed Time (sec)'
+      yAxisLabel: 'Number of Cars'
     };
-    this.timeSpeedToggle = this.timeSpeedToggle.bind(this);
-    this.distanceChange = this.distanceChange.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({data: bucketByHour(nextProps.data)});
-  }
-
-  timeSpeedToggle(checked, distance) {
-    let data = bucketByHour(this.props.data);
-    if (checked) {
-      this.setState({data: data, yAxisLabel: 'Elapsed Time (sec)'});
-    } else {
-      data = convertSpeed(data, distance);
-      this.setState({data: data, yAxisLabel: 'Speed (mph)'});
-    }
-  }
-
-  distanceChange(distance) {
-    let data = convertSpeed(bucketByHour(this.props.data), distance);
-    this.setState({data: data});
+    this.setState({data: carsPerBucket(nextProps.data)});
   }
 
   render() {
     const { classes } = this.props;
     return (
       <Paper className={classes.sheet}>
-        <Typography type='title' align='left' className={classes.title}>Average Trip Grouped By Hour</Typography>
+        <Typography type='title' align='left' className={classes.title}>Average Cars per Hour</Typography>
         <Plot data={this.state.data} yAxisLabel={this.state.yAxisLabel} plotOptions={plotOptions} plotID={this.props.plotID} className={classes.plot}/>
-        <Controls distanceChange={this.distanceChange} timeSpeedToggle={this.timeSpeedToggle}/>
       </Paper>
     );
   }
 }
 
-export default withStyles(styles)(PlotSheetByHour);
+export default withStyles(styles)(PlotSheetCarsPerHour);

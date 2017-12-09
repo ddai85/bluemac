@@ -3,10 +3,11 @@ import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import PlotSheet from './components/plotSheet.jsx';
 import PlotSheetByHour from './components/plotSheetByHour.jsx';
+import PlotSheetCarsPerHour from './components/plotSheetCarsPerHour.jsx';
 import Header from './components/header.jsx';
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 import Grid from 'material-ui/Grid';
-import { getData } from './data-handeling/fetchData.js';
+import { getData } from './dataHandeling/fetchData.js';
 
 import deepOrange from 'material-ui/colors/deepOrange';
 import blue from 'material-ui/colors/blue';
@@ -41,8 +42,9 @@ class App extends React.Component {
     return (
       <MuiThemeProvider theme={theme}>
         <Header />
-        <PlotSheet data={this.state.trafficData} plotID="2"/>
-        <PlotSheetByHour data={this.state.trafficData} plotID="1"/>
+        <PlotSheet data={this.state.trafficData} plotID="1"/>
+        <PlotSheetByHour data={this.state.trafficData} plotID="2"/>
+        <PlotSheetCarsPerHour data={this.state.trafficData} plotID="3"/>
       </MuiThemeProvider>
     );
   }

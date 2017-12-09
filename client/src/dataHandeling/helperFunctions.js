@@ -24,7 +24,17 @@ const convertTime = function(rawData) {
   return convertedData;
 }
 
+const convertSpeed = function(rawData, distance) {
+  let convertedData = rawData.map((item) => {
+    let speed = Math.floor(distance / item[1] * 3600);
+    return [item[0], speed];
+  })
+  
+  return convertedData;
+}
+
 module.exports = {
   convertTimeToHour,
-  convertTime
+  convertTime,
+  convertSpeed
 }
