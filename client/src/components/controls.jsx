@@ -8,6 +8,7 @@ import TextField from 'material-ui/TextField';
 import { MenuItem } from 'material-ui/Menu';
 import { FormControlLabel, FormGroup } from 'material-ui/Form';
 import Button from 'material-ui/Button';
+import { saveSettings } from '../dataHandeling/fetchData.js';
 
 
 const styles = theme => ({
@@ -27,8 +28,8 @@ class Controls extends React.Component {
     super(props);
     this.state = {
       data: [],
-      yaxisToggle: true,
-      yaxisLabel: 'Elapsed Time',
+      yAxisToggle: true,
+      yAxisLabel: 'Elapsed Time',
       distance: 1
     };
     this.handleDistanceChange = this.handleDistanceChange.bind(this);
@@ -41,11 +42,18 @@ class Controls extends React.Component {
   handleChange(field) {
     return (event, checked) => {
       if (checked !== undefined) {
+        let label = checked ? 'Elapsed Time' : 'Speed (mph)'
         this.setState({
           [field]: checked,
-          yaxisLabel: checked ? 'Elapsed Time' : 'Speed'
+          yAxisLabel: label
         });
         this.props.timeSpeedToggle(checked, this.state.distance);
+        let setting = {};
+        setting[this.props.plotID] = {
+          yAxisLabel: label,
+          distance: this.state.distance
+        }
+        saveSettings(setting);
       } else {
         this.setState({
           [field]: event.target.value,
@@ -66,16 +74,16 @@ class Controls extends React.Component {
         <FormControlLabel
           control={
             <Switch
-              checked={this.state.yaxisToggle}
-              onChange={this.handleChange('yaxisToggle')}
-              aria-label='yaxisToggle'
+              checked={this.state.yAxisToggle}
+              onChange={this.handleChange('yAxisToggle')}
+              aria-label='yAxisToggle'
               />
             }
-          label={this.state.yaxisLabel}
+          label={this.state.yAxisLabel}
         >
         </FormControlLabel>
         <br/>
-        {!this.state.yaxisToggle &&
+        {!this.state.yAxisToggle &&
           <TextField
             id='distance'
             helperText='Miles between detectors'
@@ -86,7 +94,7 @@ class Controls extends React.Component {
           />
         }
         <br/>
-        {!this.state.yaxisToggle &&
+        {!this.state.yAxisToggle &&
         <Button raised dense className={classes.button} onClick={this.handleDistanceChange}>
           Change
         </Button>

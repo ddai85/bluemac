@@ -13,6 +13,28 @@ function getData(callback) {
   })
 }
 
+function getSettings(callback) {
+  $.get({
+    url: HOSTNAME + '/settings',
+    success: (data) => {
+      callback(JSON.parse(data));
+    }
+  })
+}
+
+function saveSettings(settings) {
+  $.post({
+    url: HOSTNAME + '/settings',
+    data: settings,
+    dataType: 'json',
+    success: (data) => {
+      console.log('settings were saved');
+    }
+  })
+}
+
 module.exports = {
-  getData
+  getData,
+  getSettings,
+  saveSettings
 }

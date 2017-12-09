@@ -76,7 +76,7 @@ export class PlotSheetCarsPerHour extends React.Component {
     const { classes } = this.props;
     return (
       <Paper className={classes.sheet}>
-        <Typography type='title' align='left' className={classes.title}>Average Cars per Hour</Typography>
+        <Typography type='title' align='left' className={classes.title}>Cars per Hour</Typography>
         <Plot data={this.state.data} yAxisLabel={this.state.yAxisLabel} plotOptions={plotOptions} plotID={this.props.plotID} className={classes.plot}/>
       </Paper>
     );

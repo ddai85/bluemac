@@ -6,6 +6,7 @@ import Controls from './controls.jsx';
 import Paper from 'material-ui/Paper';
 import { bucketByHour } from '../dataHandeling/bucketByHour.js';
 import Typography from 'material-ui/Typography';
+import { getSettings } from '../dataHandeling/fetchData.js';
 
 const styles = theme => ({
   sheet: {
@@ -63,6 +64,11 @@ export class PlotSheetByHour extends React.Component {
     this.timeSpeedToggle = this.timeSpeedToggle.bind(this);
     this.distanceChange = this.distanceChange.bind(this);
   }
+  componentWillMount() {
+    getSettings((data) => {
+      this.setState({yAxisLabel: data[this.props.plotID].yAxisLabel});
+    });
+  }
 
   componentWillReceiveProps(nextProps) {
     this.setState({data: bucketByHour(nextProps.data)});
@@ -89,7 +95,7 @@ export class PlotSheetByHour extends React.Component {
       <Paper className={classes.sheet}>
         <Typography type='title' align='left' className={classes.title}>Average Trip Grouped By Hour</Typography>
         <Plot data={this.state.data} yAxisLabel={this.state.yAxisLabel} plotOptions={plotOptions} plotID={this.props.plotID} className={classes.plot}/>
-        <Controls distanceChange={this.distanceChange} timeSpeedToggle={this.timeSpeedToggle}/>
+        <Controls distanceChange={this.distanceChange} timeSpeedToggle={this.timeSpeedToggle} plotID={this.props.plotID}/>
       </Paper>
     );
   }

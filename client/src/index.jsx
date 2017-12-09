@@ -7,7 +7,7 @@ import PlotSheetCarsPerHour from './components/plotSheetCarsPerHour.jsx';
 import Header from './components/header.jsx';
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 import Grid from 'material-ui/Grid';
-import { getData } from './dataHandeling/fetchData.js';
+import { getData, getSettings } from './dataHandeling/fetchData.js';
 
 import deepOrange from 'material-ui/colors/deepOrange';
 import blue from 'material-ui/colors/blue';
@@ -26,14 +26,15 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      trafficData: null
+      trafficData: null,
+      settings: []
     };
   }
 
   componentDidMount() {
     getData((data) => {
       this.setState({trafficData: data});
-    })
+    });
   }
 
 
@@ -42,9 +43,9 @@ class App extends React.Component {
     return (
       <MuiThemeProvider theme={theme}>
         <Header />
-        <PlotSheet data={this.state.trafficData} plotID="1"/>
-        <PlotSheetByHour data={this.state.trafficData} plotID="2"/>
-        <PlotSheetCarsPerHour data={this.state.trafficData} plotID="3"/>
+        <PlotSheet data={this.state.trafficData} plotID={0}/>
+        <PlotSheetByHour data={this.state.trafficData} plotID={1}/>
+        <PlotSheetCarsPerHour data={this.state.trafficData} plotID={2}/>
       </MuiThemeProvider>
     );
   }

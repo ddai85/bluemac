@@ -7,6 +7,7 @@ import Controls from './controls.jsx';
 import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
 import { convertTime, convertSpeed } from '../dataHandeling/helperFunctions.js';
+import { getSettings } from '../dataHandeling/fetchData.js';
 
 const styles = theme => ({
   sheet: {
@@ -62,18 +63,52 @@ export class PlotSheet extends React.Component {
     super(props);
     this.state = {
       data: [],
-      yAxisLabel: 'Elapsed Time (sec)'
+      yAxisLabel: 'Elapsed Time (sec)',
+      distance: 1
     };
 
     this.timeSpeedToggle = this.timeSpeedToggle.bind(this);
     this.distanceChange = this.distanceChange.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({data: convertTime(nextProps.data)});
+  componentDidMount() {
+    getSettings((data) => {
+      this.setState({yAxisLabel: data[this.props.plotID].yAxisLabel, distance: data[this.props.plotID].distance});
+    });
   }
 
-  timeSpeedToggle(checked, distance) {
+  componentWillReceiveProps(nextProps) {
+    if (this.state.yAxisLabel === 'Speed (mph)') {
+      this.timeSpeedToggle(false, this.state.distance);
+    } else {
+      this.setState({data: convertTime(nextProps.data)});
+    }
+  }
+
+  handleChange(field) {
+    return (event, checked) => {
+      if (checked !== undefined) {
+        let label = checked ? 'Elapsed Time' : 'Speed (mph)'
+        this.setState({
+          [field]: checked,
+          yAxisLabel: label
+        });
+        this.props.timeSpeedToggle(checked, this.state.distance);
+        let setting = {};
+        setting[this.props.plotID] = {
+          yAxisLabel: label,
+          distance: this.state.distance
+        }
+        saveSettings(setting);
+      } else {
+        this.setState({
+          [field]: event.target.value,
+        });
+      }
+    }
+  };
+
+  timeSpeedToggle(checked, distance, data) {
     let data = convertTime(this.props.data);
     if (checked) {
       this.setState({data: data, yAxisLabel: 'Elapsed Time (sec)'});
@@ -95,7 +130,7 @@ export class PlotSheet extends React.Component {
         <Paper className={classes.sheet}>
           <Typography type='title' className={classes.title} align='left'>Raw Data</Typography>
           <Plot data={this.state.data} yAxisLabel={this.state.yAxisLabel} plotOptions={plotOptions} plotID={this.props.plotID} className={classes.plot}/>
-          <Controls timeSpeedToggle={this.timeSpeedToggle} distanceChange={this.distanceChange}/>
+          <Controls timeSpeedToggle={this.timeSpeedToggle} distanceChange={this.distanceChange} plotID={this.props.plotID}/>
         </Paper>
       </div>
     );
