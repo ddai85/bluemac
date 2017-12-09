@@ -29,20 +29,25 @@ class Controls extends React.Component {
     this.state = {
       data: [],
       yAxisToggle: true,
-      yAxisLabel: 'Elapsed Time',
+      yAxisLabel: 'Elapsed Time (sec)',
       distance: 1
     };
     this.handleDistanceChange = this.handleDistanceChange.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({data: nextProps.data});
+    if (!nextProps.checked) {
+      this.setState({
+        yAxisToggle: false,
+        yAxisLabel: 'Speed (mph)'
+      })
+    }
   }
 
   handleChange(field) {
     return (event, checked) => {
       if (checked !== undefined) {
-        let label = checked ? 'Elapsed Time' : 'Speed (mph)'
+        let label = checked ? 'Elapsed Time (sec)' : 'Speed (mph)'
         this.setState({
           [field]: checked,
           yAxisLabel: label
