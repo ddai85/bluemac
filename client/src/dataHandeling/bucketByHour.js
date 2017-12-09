@@ -31,12 +31,37 @@ const bucketByHour = function(data) {
       numItems++;
     }
   }
-
-  // hourBuckets = hourBuckets.map((item) => {
-  //   return [item[0].getHours(), item[1]];
-  // })
-
   return hourBuckets;
-}
+};
 
-module.exports = bucketByHour;
+const carsPerBucket = function(data) {
+  let processedData = convertTimeToHour(data);
+
+  let hourBuckets = [];
+  let prevHour = processedData[0][0];
+  let numItems = 1;
+
+  for (let i = 1; i < processedData.length; i++) {
+    if (JSON.stringify(processedData[i][0]) === JSON.stringify(prevHour)) {
+      numItems++;
+    } else {
+      while (JSON.stringify(processedData[i][0]) !== JSON.stringify(prevHour)) {
+        if (numItems === 0) {
+          hourBuckets.push([prevHour, 0]);
+        } else {
+          hourBuckets.push([prevHour, numItems]);
+          numItems = 0;
+        }
+        prevHour = prevHour.setHours(prevHour.getHours() + 1);
+        prevHour = new Date(prevHour);
+      }
+      numItems++;
+    }
+  }
+  return hourBuckets;
+};
+
+module.exports = {
+  bucketByHour,
+  carsPerBucket
+};

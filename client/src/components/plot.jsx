@@ -7,12 +7,12 @@ import axislabels from '../jquery.flot.axislabels.js';
 
 const styles = theme => ({
   graph: {
-    float: "left",
-    "padding-top": "20px"
+    float: 'left',
+    'padding-top': '20px'
   },
   canvas: {
-    height: "400px",
-    width: "600px"
+    height: '400px',
+    width: '600px'
   }
 });
 
@@ -20,17 +20,21 @@ class Plot extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: []
+      data: [],
+      plotOptions: {}
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({data: nextProps.data});
+    let plotOptions = nextProps.plotOptions;
+    plotOptions.yaxis.axisLabel = nextProps.yAxisLabel;
+    this.setState({data: nextProps.data, plotOptions: plotOptions});
+    
   }
   
   
   render() {
-    $.plot($("#" + this.props.plotID), [{data: this.state.data}], this.props.plotOptions);
+    $.plot($('#' + this.props.plotID), [{data: this.state.data}], this.state.plotOptions);
     const { classes } = this.props;
     return (
       <div className={classes.graph}>
