@@ -79,6 +79,9 @@ export class PlotSheet extends React.Component {
       if (data[this.props.plotID].yAxisLabel !== 'Elapsed Time (sec)') {
         this.setState({yAxisToggle: false});
       }
+      if (this.props.data !== null) {
+        timeSpeedToggle(this.state.yAxisToggle, this.state.distance);
+      }
     });
   }
 
