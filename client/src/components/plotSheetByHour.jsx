@@ -9,7 +9,7 @@ import Controls from './controls.jsx';
 import Paper from 'material-ui/Paper';
 import { bucketByHour } from '../dataHandeling/bucketByHour.js';
 import Typography from 'material-ui/Typography';
-import { getSettings } from '../dataHandeling/fetchData.js';
+import { getSettings, saveSettings } from '../dataHandeling/fetchData.js';
 
 const styles = theme => ({
   sheet: {
@@ -64,43 +64,66 @@ export class PlotSheetByHour extends React.Component {
       yAxisToggle: true,
       distance: 1
     }
-    this.timeSpeedToggle = this.timeSpeedToggle.bind(this);
-    this.distanceChange = this.distanceChange.bind(this);
+
+    this.updateData = this.updateData.bind(this);
+    this.handleToggle = this.handleToggle.bind(this);
+    this.handleDistanceValue = this.handleDistanceValue.bind(this);
+    this.handleDistanceChange = this.handleDistanceChange.bind(this);
+    this.setSettings = this.setSettings.bind(this);
   }
 
-  componentDidMount() {
-    getSettings((data) => {
-      this.setState({yAxisLabel: data[this.props.plotID].yAxisLabel, distance: data[this.props.plotID].distance});
-      if (data[this.props.plotID].yAxisLabel !== 'Elapsed Time (sec)') {
-        this.setState({yAxisToggle: false});
-      };
-      if (this.props.data !== null) {
-        timeSpeedToggle(this.state.yAxisToggle, this.state.distance);
+  componentWillMount() {
+    let context = this;
+    getSettings((settings) => {
+      context.setState({yAxisLabel: settings[this.props.plotID].yAxisLabel, distance: settings[this.props.plotID].distance});
+      if (settings[this.props.plotID].yAxisLabel !== 'Elapsed Time (sec)') {
+        context.setState({yAxisToggle: false}, this.updateData);
       }
     });
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.state.yAxisLabel === 'Speed (mph)') {
-      this.setState({data: convertSpeed(bucketByHour(nextProps.data), this.state.distance)});
-    } else {
-      this.setState({data: bucketByHour(nextProps.data)});
+    if (this.props.data === null) {
+      this.updateData(nextProps.data);
     }
   }
 
-  timeSpeedToggle(checked, distance) {
-    let data = bucketByHour(this.props.data);
+  updateData(data = this.props.data) {
+    if (data !== null) {
+      data = bucketByHour(data);
+      if (this.state.yAxisToggle) {
+        this.setState({data: data});
+      } else {
+        data = convertSpeed(data, this.state.distance);
+        this.setState({data: data});
+      }
+    }
+    this.setSettings();
+  }
+
+  setSettings() {
+    let setting = {};
+    setting[this.props.plotID] = {
+      yAxisLabel: this.state.yAxisLabel,
+      distance: this.state.distance
+    }
+    saveSettings(setting);
+  }
+
+  handleToggle(e, checked) {
     if (checked) {
-      this.setState({data: data, yAxisLabel: 'Elapsed Time (sec)', yAxisToggle: true});
+      this.setState({yAxisToggle: true, yAxisLabel: 'Elapsed Time (sec)'}, this.updateData);
     } else {
-      data = convertSpeed(data, distance);
-      this.setState({data: data, yAxisLabel: 'Speed (mph)', yAxisToggle: false});
+      this.setState({yAxisToggle: false, yAxisLabel: 'Speed (mph)'}, this.updateData)
     }
   }
 
-  distanceChange(distance) {
-    let data = convertSpeed(bucketByHour(this.props.data), distance);
-    this.setState({data: data, distance: distance});
+  handleDistanceValue(e) {
+    this.setState({distance: e.target.value});
+  }
+
+  handleDistanceChange() {
+    this.updateData();
   }
 
   render() {
@@ -108,8 +131,19 @@ export class PlotSheetByHour extends React.Component {
     return (
       <Paper className={classes.sheet}>
         <Typography type='title' align='left' className={classes.title}>Average Trip Grouped By Hour</Typography>
-        <Plot data={this.state.data} yAxisLabel={this.state.yAxisLabel} plotOptions={plotOptions} plotID={this.props.plotID} className={classes.plot}/>
-        <Controls distanceChange={this.distanceChange} timeSpeedToggle={this.timeSpeedToggle} plotID={this.props.plotID} checked={this.state.yAxisToggle} distance={this.state.distance}/>
+        <Plot 
+          data={this.state.data} 
+          yAxisLabel={this.state.yAxisLabel} 
+          plotOptions={plotOptions} 
+          plotID={this.props.plotID} 
+          className={classes.plot}
+        />
+        <Controls 
+          plotSheet={this.state}
+          handleToggle={this.handleToggle}
+          handleDistanceValue={this.handleDistanceValue}
+          handleDistanceChange={this.handleDistanceChange}
+        />
       </Paper>
     );
   }

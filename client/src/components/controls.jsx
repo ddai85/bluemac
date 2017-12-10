@@ -8,7 +8,6 @@ import TextField from 'material-ui/TextField';
 import { MenuItem } from 'material-ui/Menu';
 import { FormControlLabel, FormGroup } from 'material-ui/Form';
 import Button from 'material-ui/Button';
-import { saveSettings } from '../dataHandeling/fetchData.js';
 
 
 const styles = theme => ({
@@ -24,60 +23,6 @@ const styles = theme => ({
 });
 
 class Controls extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: [],
-      yAxisToggle: true,
-      yAxisLabel: 'Elapsed Time (sec)',
-      distance: 1
-    };
-    this.handleDistanceChange = this.handleDistanceChange.bind(this);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (!nextProps.checked) {
-      this.setState({
-        yAxisToggle: false,
-        yAxisLabel: 'Speed (mph)'
-      })
-    }
-    this.setState({distance: nextProps.distance});
-  }
-
-  handleChange(field) {
-    return (event, checked) => {
-      if (checked !== undefined) {
-        let label = checked ? 'Elapsed Time (sec)' : 'Speed (mph)'
-        this.setState({
-          [field]: checked,
-          yAxisLabel: label
-        });
-        this.props.timeSpeedToggle(checked, this.state.distance);
-        let setting = {};
-        setting[this.props.plotID] = {
-          yAxisLabel: label,
-          distance: this.state.distance
-        }
-        saveSettings(setting);
-      } else {
-        this.setState({
-          [field]: event.target.value,
-        });
-      }
-    }
-  };
-  
-  handleDistanceChange() {
-    this.props.distanceChange(this.state.distance);
-    let setting = {}
-    setting[this.props.plotID] = {
-      yAxisLabel: this.state.yAxisLabel,
-      distance: this.state.distance
-    }
-    saveSettings(setting);
-  }
-  
   render() {
     const { classes } = this.props;
     return (
@@ -86,28 +31,28 @@ class Controls extends React.Component {
         <FormControlLabel
           control={
             <Switch
-              checked={this.state.yAxisToggle}
-              onChange={this.handleChange('yAxisToggle')}
+              checked={this.props.plotSheet.yAxisToggle}
+              onChange={this.props.handleToggle}
               aria-label='yAxisToggle'
-              />
+            />
             }
-          label={this.state.yAxisLabel}
+          label={this.props.plotSheet.yAxisLabel}
         >
         </FormControlLabel>
         <br/>
-        {!this.state.yAxisToggle &&
+        {!this.props.plotSheet.yAxisToggle &&
           <TextField
             id='distance'
             helperText='Miles between detectors'
             className={classes.textField}
-            value={this.state.distance}
-            onChange={this.handleChange('distance')}
+            value={this.props.plotSheet.distance}
+            onChange={this.props.handleDistanceValue}
             margin='none'
           />
         }
         <br/>
-        {!this.state.yAxisToggle &&
-        <Button raised dense className={classes.button} onClick={this.handleDistanceChange}>
+        {!this.props.plotSheet.yAxisToggle &&
+        <Button raised dense className={classes.button} onClick={this.props.handleDistanceChange}>
           Change
         </Button>
         }
