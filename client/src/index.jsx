@@ -34,7 +34,7 @@ class App extends React.Component {
   }
 
 /* ----- getData function fetches data once from server and passes down to individual plots ----- */
-  componentWillMount() {
+  componentDidMount() {
     getData((data) => {
       this.setState({trafficData: data});
     });
