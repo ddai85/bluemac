@@ -4,37 +4,28 @@ const { convertTimeToHour } = require('./helperFunctions.js');
 by hour and return an array of averaged data values ready to plot ----- */
 const bucketByHour = function(data) {
   let processedData = convertTimeToHour(data);
-
+  let objBucket = {};
   let hourBuckets = [];
-  let prevHour = processedData[0][0];
-  let runningSum = processedData[0][1];
-  let numItems = 1;
 
-  for (let i = 1; i < processedData.length; i++) {
-    if (JSON.stringify(processedData[i][0]) === JSON.stringify(prevHour)) {
-      runningSum += processedData[i][1];
-      numItems++;
+  //add each data point into a bucket using date/hour as object key
+  for (let i = 0; i < processedData.length; i++) {
+    if (objBucket[processedData[i][0]] !== undefined) {
+      objBucket[processedData[i][0]].push(processedData[i]);
     } else {
-      while (JSON.stringify(processedData[i][0]) !== JSON.stringify(prevHour)) {
-        if (numItems === 0) {
-          hourBuckets.push([prevHour, 0]);
-        } else {
-          let average = Math.floor(runningSum / numItems);
-          hourBuckets.push([new Date(prevHour), average]);
-          runningSum = 0;
-          numItems = 0;
-        }
-        prevHour = prevHour.setHours(prevHour.getHours() + 1);
-        prevHour = new Date(prevHour);
-      }
-      runningSum += processedData[i][1];
-      numItems++;
+      objBucket[processedData[i][0]] = [processedData[i]];
     }
   }
-  if (numItems !== 0) {
-    let average = Math.floor(runningSum / numItems);
-    hourBuckets.push([new Date(prevHour), average]);
+
+  //iterate through each bucket to determine average
+  for (let j in objBucket) {
+    let sum = 0;
+    for (let k = 0; k < objBucket[j].length; k++) {
+      sum += objBucket[j][k][1];
+    }
+    let average = Math.floor(sum / objBucket[j].length);
+    hourBuckets.push([new Date(j), average]);
   }
+
   return hourBuckets;
 };
 
@@ -42,31 +33,23 @@ const bucketByHour = function(data) {
 hour and returns a count of number of items in each bucket ----- */
 const carsPerBucket = function(data) {
   let processedData = convertTimeToHour(data);
-
+  let objBucket = {};
   let hourBuckets = [];
-  let prevHour = processedData[0][0];
-  let numItems = 1;
 
-  for (let i = 1; i < processedData.length; i++) {
-    if (JSON.stringify(processedData[i][0]) === JSON.stringify(prevHour)) {
-      numItems++;
+  //add each data point into a bucket using date/hour as object key
+  for (let i = 0; i < processedData.length; i++) {
+    if (objBucket[processedData[i][0]] !== undefined) {
+      objBucket[processedData[i][0]].push(processedData[i]);
     } else {
-      while (JSON.stringify(processedData[i][0]) !== JSON.stringify(prevHour)) {
-        if (numItems === 0) {
-          hourBuckets.push([prevHour, 0]);
-        } else {
-          hourBuckets.push([prevHour, numItems]);
-          numItems = 0;
-        }
-        prevHour = prevHour.setHours(prevHour.getHours() + 1);
-        prevHour = new Date(prevHour);
-      }
-      numItems++;
+      objBucket[processedData[i][0]] = [processedData[i]];
     }
   }
-  if (numItems !== 0) {
-    hourBuckets.push([prevHour, numItems]);
+
+  //iterate through each bucket to determine count
+  for (let j in objBucket) {
+    hourBuckets.push([new Date(j), objBucket[j].length]);
   }
+
   return hourBuckets;
 };
 
