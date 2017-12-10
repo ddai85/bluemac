@@ -19,7 +19,7 @@ describe('Server', () => {
       request(server)
         .get('/')
         .expect('Content-Type', /text\/html/)
-        .expect(/src="main.bundle\.js"/)
+        .expect(/src='main.bundle\.js'/)
         .expect(200)
         .end(done);
     });
