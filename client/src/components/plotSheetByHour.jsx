@@ -63,7 +63,7 @@ export class PlotSheetByHour extends React.Component {
       yAxisLabel: 'Elapsed Time (sec)',
       yAxisToggle: true,
       distance: 1
-    };
+    }
     this.timeSpeedToggle = this.timeSpeedToggle.bind(this);
     this.distanceChange = this.distanceChange.bind(this);
   }
@@ -73,6 +73,9 @@ export class PlotSheetByHour extends React.Component {
       this.setState({yAxisLabel: data[this.props.plotID].yAxisLabel, distance: data[this.props.plotID].distance});
       if (data[this.props.plotID].yAxisLabel !== 'Elapsed Time (sec)') {
         this.setState({yAxisToggle: false});
+      };
+      if (this.props.data !== null) {
+        timeSpeedToggle(this.state.yAxisToggle, this.state.distance);
       }
     });
   }
