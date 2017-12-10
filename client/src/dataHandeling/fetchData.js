@@ -1,7 +1,7 @@
 const $ = require('jquery');
 
 /* ----- HOSTNAME can be pointed at whichever API is serving the data ----- */
-const HOSTNAME = 'http://127.0.0.1:8888';
+const HOSTNAME = 'http://54.67.32.168:8888';
 
 /* ----- GET request can be modified with parameters to select more specific data from API ----- */
 function getData(callback) {
